@@ -1,7 +1,6 @@
 #include "types.h"
 #include "search.cpp"
 #include "simple_graph.cpp"
-#include "order_path.cpp"
 #include "depthlimiterwrapper.cpp"
 #include "mystack.cpp"
 #include <queue>

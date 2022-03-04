@@ -4,24 +4,12 @@ class undir_unwei_graph : public graph
 {
 #define VERTEXLIMIT 100
 	// Maximum of 100 vertex numbered 0..99 are allowed
-	bool adj[VERTEXLIMIT][VERTEXLIMIT];
+	vector<vector<bool>> adj;
 
 public:
-	undir_unwei_graph()
+	undir_unwei_graph() : adj(vector<vector<bool>>(VERTEXLIMIT, vector<bool>(VERTEXLIMIT, false))) {}
+	undir_unwei_graph(const vector<vector<int>> &edges) : adj(vector<vector<bool>>(VERTEXLIMIT, vector<bool>(VERTEXLIMIT, false)))
 	{
-		bool *start = adj[0] + 0, *end = adj[VERTEXLIMIT] + VERTEXLIMIT;
-		do
-		{
-			*(start++) = false;
-		} while (start != end);
-	}
-	undir_unwei_graph(const vector<vector<int>> &edges)
-	{
-		bool *start = adj[0] + 0, *end = adj[VERTEXLIMIT] + VERTEXLIMIT;
-		do
-		{
-			*(start++) = false;
-		} while (start != end);
 		add_edges(edges);
 	}
 	void add_edges(const vector<vector<int>> &edges)
@@ -32,20 +20,17 @@ public:
 	virtual vector<pair<int, int>> get_adjacent(const int &node, const int &cost)
 	{
 		vector<pair<int, int>> res;
-		bool *start = adj[node] + 0, *end = start + VERTEXLIMIT;
-		int ncost = cost + 1, i = 0;
-		while (start != end)
+		int i = 0, c = cost + 1;
+		for (const bool &b : adj[node])
 		{
-			if (*(start++))
-				res.push_back(make_pair(i, ncost));
+			if (b)
+				res.push_back(make_pair(i, c));
 			i++;
 		}
 		return res;
 	}
 	inline void add_edge(const int &u, const int &v)
 	{
-		if (u < 0 || v < 0 || u >= 100 || v >= 100)
-			throw myexcep("vertex out of bound");
 		adj[u][v] = adj[v][u] = true;
 	}
 };
@@ -89,3 +74,26 @@ public:
 		return false;
 	}
 };
+void printsimpleorder(vector<int> order)
+{
+	if (order.empty())
+		cout << endl;
+	const int L = order.size();
+	cout << order[0];
+	for (int i = 1; i < L; i++)
+		cout << ',' << order[i];
+	cout << endl;
+}
+void printsimplepath(stack<int> st)
+{
+	if (st.empty())
+		cout << endl;
+	cout << st.top();
+	st.pop();
+	while (!st.empty())
+	{
+		cout << "->" << st.top();
+		st.pop();
+	}
+	cout << endl;
+}
