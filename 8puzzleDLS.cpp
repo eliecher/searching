@@ -19,7 +19,7 @@ int main()
 	vector<int> order;
 	depthlimiterwrapper GG(G, lim);
 	vector<pair<int, int>> res = search<mystack>(GG, start, order, t, g);
-	cout << "ORDER:" << endl;
+	cout << "ORDER (VISITED " << order.size() << " vertices):" << endl;
 	printorder(order);
 	cout << endl;
 	const int L = res.size();

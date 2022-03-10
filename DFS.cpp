@@ -4,8 +4,6 @@
 #include "mystack.cpp"
 #include <queue>
 
-
-
 int main()
 {
 	undir_unwei_graph G;
@@ -27,7 +25,7 @@ int main()
 	tree t;
 	vector<int> order;
 	vector<pair<int, int>> res = search<mystack>(G, start, order, t, g);
-	cout << "ORDER:" << endl;
+	cout << "ORDER (VISITED " << order.size() << " vertices):" << endl;
 	printsimpleorder(order);
 	const int L = res.size();
 	for (int i = 0; i < L; i++)

@@ -34,7 +34,7 @@ int main()
 		tree t;
 		vector<int> order;
 		vector<pair<int, int>> res = search<mystack>(GG, start, order, t, g);
-		cout << "ORDER:" << endl;
+		cout << "ORDER (VISITED " << order.size() << " vertices):" << endl;
 		printsimpleorder(order);
 		const int L = res.size();
 		for (int i = 0; i < L; i++)
