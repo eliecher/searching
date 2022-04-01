@@ -22,16 +22,17 @@ vector<pair<int, int>> search(graph &G, const int &start, vector<int> &order, tr
 			numsols--;
 			solutions.push_back(make_pair(node, cost));
 		}
-		vector<pair<int, int>> neigh = G.get_adjacent(node, cost);
+		vector<pair<int, int>> neigh = G.get_adjacent(node, cost),filtered;
 		++depth;
 		for (pair<int, int> &nd : neigh)
 		{
 			if (closed.count(nd.first))
 				continue;
 			closed.insert(nd.first);
-			open.insert(nd.first, nd.second, depth);
+			filtered.push_back(nd);
 			search_tree[nd.first] = node;
 		}
+		open.insert(filtered,depth);
 	}
 	return solutions;
 }
