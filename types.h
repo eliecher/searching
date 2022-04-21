@@ -2,10 +2,46 @@
 #include <vector>
 #include <set>
 #include <stack>
+#include <ctype.h>
+#include <climits>
 #include <unordered_set>
 #include <unordered_map>
 using namespace std;
 #ifndef TYPES_H
+typedef unsigned int COST;
+typedef unsigned int VERTEX;
+#define COST_MAX UINT_MAX
+#define COST_MIN 0
+#define VERTEX_MAX UINT_MAX
+#define VERTEX_MIN 0
+
+struct treenode
+{
+	VERTEX parent;
+	int operation;
+	treenode(const VERTEX &parent = VERTEX_MAX, const int &operation = INT_MAX);
+};
+struct solnode
+{
+	VERTEX vertex;
+	COST cost;
+	solnode(const VERTEX &vertex = VERTEX_MAX, const COST &cost = COST_MAX);
+};
+
+
+struct opennode
+{
+	solnode s;
+	int depth;
+	opennode(const solnode &s, const int &depth);
+};
+struct graph_node
+{
+	solnode s;
+	int operation;
+	graph_node(const solnode &s, const int &operation);
+};
+
 class myexcep : public exception
 {
 
@@ -16,51 +52,49 @@ public:
 
 class graph
 {
+protected:
+	unordered_map<int, string> operation_names;
+
 public:
-	virtual vector<pair<int, int>> get_adjacent(const int &, const int &) = 0;
+	virtual vector<graph_node> get_adjacent(const solnode &) = 0;
 };
 
 class tree
 {
-	unordered_map<int, int> table;
+protected:
+	unordered_map<VERTEX, treenode> table;
 
 public:
 	tree();
-	bool is_in(const int &n);
-	int &operator[](const int &);
-	stack<int> getpath(const int &n);
+	bool is_in(const VERTEX &n);
+	treenode &operator[](const VERTEX &);
+	stack<treenode> getpath(const VERTEX &n);
 };
 
 class genopentype
 {
 public:
-	virtual void extract(int &node, int &cost, int &depth) = 0;
-	// virtual void insert(const int &node, const int &cost, const int &depth) = 0;
-	virtual void insert(const vector<pair<int, int>>& nodes,const int& depth) = 0;
-	virtual void insert(const vector<pair<int, int>>& nodes,const vector<int>& depth) = 0;
+	virtual opennode extract() = 0;
+	virtual void insert(const vector<opennode> &) = 0;
+	// virtual void insert(const vector<solnode> &,const int& depth) = 0;
 	virtual bool unempty() = 0;
-};
-struct search_node
-{
-	int v, c, d;
-	search_node(const int &v, const int &c, const int &d) : v(v), c(c), d(d) {}
 };
 
 class goaldecider
 {
 public:
-	virtual bool operator()(const int &n) = 0;
+	virtual bool operator()(const VERTEX &) = 0;
 };
 
-extern graph& get_graph();
-extern goaldecider& get_goal_decider();
-extern int get_start_node();
-extern void init_graph(graph&);
-extern void destroy_graph(graph&);
-extern void destroy_goaldecider(goaldecider&);
-extern void orderprinter(const vector<int>&,ostream&);
-extern void pathprinter(stack<int>&,ostream&);
-extern void search_and_print(graph&,goaldecider&,int);
+extern graph &get_graph();
+extern goaldecider &get_goal_decider();
+extern VERTEX get_start_vertex();
+extern void init_graph(graph &);
+extern void destroy_graph(graph &);
+extern void destroy_goaldecider(goaldecider &);
+extern void orderprinter(const vector<VERTEX> &, ostream &);
+extern void pathprinter(stack<treenode> &, ostream &);
+extern void search_and_print(graph &, goaldecider &, VERTEX, int);
 extern int get_lim();
 
 #endif

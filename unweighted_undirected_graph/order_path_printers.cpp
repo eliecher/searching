@@ -1,5 +1,5 @@
 #include "types.h"
-void orderprinter(const vector<int> &order, ostream &out)
+void orderprinter(const vector<VERTEX> &order, ostream &out)
 {
 	int size = order.size();
 	if (!size)
@@ -8,15 +8,15 @@ void orderprinter(const vector<int> &order, ostream &out)
 	for (int i = 1; i < size; i++)
 		out << ", " << order[i];
 }
-void pathprinter(stack<int> &path, ostream &out)
+void pathprinter(stack<treenode> &path, ostream &out)
 {
 	if (path.empty())
 		return;
-	out << path.top();
+	out << path.top().parent;
 	path.pop();
 	while (!path.empty())
 	{
-		out <<", "<< path.top();
+		out <<", "<< path.top().parent;
 		path.pop();
 	}
 }

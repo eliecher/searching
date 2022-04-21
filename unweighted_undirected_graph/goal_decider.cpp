@@ -1,16 +1,16 @@
 #include "types.h"
-#include "unweighted_undirected_graph/graph.cpp"
+#include <algorithm>
 
 class simple_goal_decider : public goaldecider
 {
-	vector<int> candidates;
+	vector<VERTEX> candidates;
 
 public:
-	simple_goal_decider(const vector<int> &candidates) : candidates(candidates)
+	simple_goal_decider(const vector<VERTEX> &candidates) : candidates(candidates)
 	{
 		sort(this->candidates.begin(), this->candidates.end());
 	}
-	bool operator()(const int &n)
+	bool operator()(const VERTEX &n)
 	{
 		int l = 0, u = candidates.size() - 1;
 		while (l <= u)
@@ -32,7 +32,7 @@ goaldecider &get_goal_decider()
 	cout << "Enter goal vertices (end with -1): ";
 	int v;
 	cin >> v;
-	vector<int> goals;
+	vector<VERTEX> goals;
 	while (v != -1)
 	{
 		goals.push_back(v);

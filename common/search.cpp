@@ -4,35 +4,37 @@
 #include "climits"
 
 template <typename op>
-vector<pair<int, int>> search(graph &G, const int &start, vector<int> &order, tree &search_tree, goaldecider &goalchecker, int numsols = 1)
+vector<solnode> search(graph &G, const VERTEX &start, vector<VERTEX> &order, tree &search_tree, goaldecider &goalchecker, int numsols = 1)
 {
-	vector<pair<int, int>> solutions;
+	vector<solnode> solutions;
 	op open;
-	search_tree[start] = INT_MIN;
-	open.insert(start, 0, 0);
-	unordered_set<int> closed;
+	search_tree[start] = treenode();
+	open.insert({opennode(solnode(start, 0), 0)});
+	unordered_set<VERTEX> closed;
 	closed.insert(start);
 	while (open.unempty() && numsols)
 	{
-		int node, cost, depth;
-		open.extract(node, cost, depth);
-		order.push_back(node);
-		if (goalchecker(node))
+		opennode cur = open.extract();
+		solnode &s = cur.s;
+		int depth = cur.depth;
+		order.push_back(cur.s.vertex);
+		if (goalchecker(cur.s.vertex))
 		{
 			numsols--;
-			solutions.push_back(make_pair(node, cost));
+			solutions.push_back(s);
 		}
-		vector<pair<int, int>> neigh = G.get_adjacent(node, cost),filtered;
+		vector<graph_node> neigh = G.get_adjacent(s);
+		vector<opennode> filtered;
 		++depth;
-		for (pair<int, int> &nd : neigh)
+		for (graph_node &nd : neigh)
 		{
-			if (closed.count(nd.first))
+			if (closed.count(nd.s.vertex))
 				continue;
-			closed.insert(nd.first);
-			filtered.push_back(nd);
-			search_tree[nd.first] = node;
+			closed.insert(nd.s.vertex);
+			filtered.push_back(opennode(nd.s, depth));
+			search_tree[nd.s.vertex] = treenode(s.vertex, nd.operation);
 		}
-		open.insert(filtered,depth);
+		open.insert(filtered);
 	}
 	return solutions;
 }
