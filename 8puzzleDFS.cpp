@@ -1,4 +1,5 @@
 #include "types.h"
+#include "tree.cpp"
 #include "search.cpp"
 #include "8puzzlegraph.cpp"
 #include "mystack.cpp"

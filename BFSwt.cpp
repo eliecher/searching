@@ -1,28 +1,40 @@
 #include "types.h"
 #include "tree.cpp"
 #include "search.cpp"
-#include "8puzzlegraph.cpp"
+#include "weighted_graph.cpp"
 #include "myqueue.cpp"
 #include <queue>
 
+
+
 int main()
 {
-	_8puzzlegraph G;
+	undir_wei_graph G;
 	int start;
+	inputtaker(G);
 	cout << "Enter start vertex: ";
 	cin >> start;
-	_8puzzlegoaldecider g;
+	cout << "Enter number of goal vertices: ";
+	int n, r;
+	cin >> n;
+	cout << "Enter " << n << " vertices: ";
+	vector<int> arr;
+	while (n--)
+	{
+		cin >> r;
+		arr.push_back(r);
+	}
+	simple_goal_decider g(arr);
 	tree t;
 	vector<int> order;
 	vector<pair<int, int>> res = search<myqueue>(G, start, order, t, g);
-	cout << "ORDER (VISITED " << order.size() << " vertices):" << endl;
-	// printorder(order);
-	cout << endl;
+	cout << "ORDER:" << endl;
+	printsimpleorder(order);
 	const int L = res.size();
 	for (int i = 0; i < L; i++)
 	{
 		cout << "PATH " << i << "(cost " << res[i].second << "):" << endl;
-		printpath(t.getpath(res[i].first));
+		printsimplepath(t.getpath(res[i].first));
 	}
 	return 0;
 }

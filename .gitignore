@@ -4,3 +4,5 @@ a.out
 .vscode/settings.json
 .vscode/tasks.json
 general algo.txt
+*.zip
+*.txt

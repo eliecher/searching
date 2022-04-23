@@ -16,14 +16,18 @@ tree::tree()
 	table.clear();
 }
 
-stack<int> tree::getpath(const int &n)
+stack<pair<int, int>> tree::getpath(const int &n)
 {
-	stack<int> s;
+	stack<pair<int, int>> s;
 	int c = n;
 	while (c != INT_MIN)
 	{
-		s.push(c);
+		s.push(make_pair(op(c), c));
 		c = table[c];
 	}
 	return s;
+}
+int &tree::op(const int &n)
+{
+	return optable[n];
 }

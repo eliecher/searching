@@ -1,14 +1,14 @@
 #include "types.h"
 #include "tree.cpp"
 #include "search.cpp"
-#include "simple_graph.cpp"
+#include "weighted_graph.cpp"
 #include "depthlimiterwrapper.cpp"
 #include "mystack.cpp"
 #include <queue>
 
 int main()
 {
-	undir_unwei_graph G;
+	undir_wei_graph G;
 	int start;
 	inputtaker(G);
 	cout << "Enter start vertex: ";

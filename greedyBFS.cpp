@@ -2,10 +2,8 @@
 #include "tree.cpp"
 #include "search.cpp"
 #include "simple_graph.cpp"
-#include "myqueue.cpp"
+#include "mygreedyBFSqueue.cpp"
 #include <queue>
-
-
 
 int main()
 {
@@ -27,8 +25,8 @@ int main()
 	simple_goal_decider g(arr);
 	tree t;
 	vector<int> order;
-	vector<pair<int, int>> res = search<myqueue>(G, start, order, t, g);
-	cout << "ORDER:" << endl;
+	vector<pair<int, int>> res = search<mygreedyBFSqueue<static_defined_heuristic>>(G, start, order, t, g);
+	cout << "ORDER (VISITED " << order.size() << " vertices):" << endl;
 	printsimpleorder(order);
 	const int L = res.size();
 	for (int i = 0; i < L; i++)

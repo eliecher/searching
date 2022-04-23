@@ -1,9 +1,8 @@
 #include "types.h"
-#include "tree.cpp"
 #include "search.cpp"
 #include "8puzzlegraph.cpp"
-#include "mystack.cpp"
-#include "depthlimiterwrapper.cpp"
+#include "myAstarqueue.cpp"
+#include "tree.cpp"
 #include <queue>
 
 int main()
@@ -12,16 +11,13 @@ int main()
 	int start;
 	cout << "Enter start vertex: ";
 	cin >> start;
-	cout << "Enter depth limit: ";
-	int lim;
-	cin >> lim;
 	_8puzzlegoaldecider g;
 	tree t;
 	vector<int> order;
-	depthlimiterwrapper GG(G, lim);
-	vector<pair<int, int>> res = search<mystack>(GG, start, order, t, g);
+	// vector<pair<int, int>> res = search<myAstarqueue<misplaced_count_heuristic>>(G, start, order, t, g);
+	vector<pair<int, int>> res = search<myAstarqueue<manhattan_total_heuristic>>(G, start, order, t, g);
 	cout << "ORDER (VISITED " << order.size() << " vertices):" << endl;
-	printorder(order);
+	// printorder(order);
 	cout << endl;
 	const int L = res.size();
 	for (int i = 0; i < L; i++)

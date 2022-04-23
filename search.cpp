@@ -9,6 +9,7 @@ vector<pair<int, int>> search(graph &G, const int &start, vector<int> &order, tr
 	vector<pair<int, int>> solutions;
 	op open;
 	search_tree[start] = INT_MIN;
+	search_tree.op(start) = 0;
 	open.insert(start, 0, 0);
 	unordered_set<int> closed;
 	closed.insert(start);
@@ -22,15 +23,17 @@ vector<pair<int, int>> search(graph &G, const int &start, vector<int> &order, tr
 			numsols--;
 			solutions.push_back(make_pair(node, cost));
 		}
-		vector<pair<int, int>> neigh = G.get_adjacent(node, cost);
+		vector<pair<pair<int, int>, int>> neigh = G.get_adjacent(node, cost);
 		++depth;
-		for (pair<int, int> &nd : neigh)
+		for (pair<pair<int, int>, int> &adj : neigh)
 		{
+			pair<int, int> &nd = adj.first;
 			if (closed.count(nd.first))
 				continue;
 			closed.insert(nd.first);
 			open.insert(nd.first, nd.second, depth);
 			search_tree[nd.first] = node;
+			search_tree.op(nd.first) = adj.second;
 		}
 	}
 	return solutions;

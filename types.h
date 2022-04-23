@@ -17,18 +17,20 @@ public:
 class graph
 {
 public:
-	virtual vector<pair<int, int>> get_adjacent(const int &, const int &) = 0;
+	virtual vector<pair<pair<int, int>, int>> get_adjacent(const int &, const int &) = 0;
 };
 
 class tree
 {
 	unordered_map<int, int> table;
+	unordered_map<int, int> optable;
 
 public:
 	tree();
 	bool is_in(const int &n);
 	int &operator[](const int &);
-	stack<int> getpath(const int &n);
+	stack<pair<int, int>> getpath(const int &n);
+	int &op(const int &);
 };
 
 class genopentype

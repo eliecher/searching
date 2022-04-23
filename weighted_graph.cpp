@@ -1,57 +1,63 @@
 #include "types.h"
 #include <algorithm>
 unordered_map<int, string> opnamemapping;
-class undir_unwei_graph : public graph
+class undir_wei_graph : public graph
 {
 #define VERTEXLIMIT 100
 	// Maximum of 100 vertex numbered 0..99 are allowed
-	vector<vector<bool>> adj;
+	vector<vector<int>> adj;
 
 public:
-	undir_unwei_graph() : adj(vector<vector<bool>>(VERTEXLIMIT, vector<bool>(VERTEXLIMIT, false)))
+	undir_wei_graph() : adj(vector<vector<int>>(VERTEXLIMIT, vector<int>(VERTEXLIMIT, INT32_MAX)))
 	{
-		opnamemapping.clear();
-		opnamemapping[1] = " -> ";
+		for (int i = 0; i < VERTEXLIMIT; i++)
+			adj[i][i] = 0;
 		opnamemapping[0] = "START AT ";
+		opnamemapping[1] = " -> ";
 	}
-	undir_unwei_graph(const vector<vector<int>> &edges) : adj(vector<vector<bool>>(VERTEXLIMIT, vector<bool>(VERTEXLIMIT, false)))
+	undir_wei_graph(const vector<vector<int>> &edges) : adj(vector<vector<int>>(VERTEXLIMIT, vector<int>(VERTEXLIMIT, INT32_MAX)))
 	{
+		for (int i = 0; i < VERTEXLIMIT; i++)
+			adj[i][i] = 0;
+		opnamemapping[0] = "START -> ";
+		opnamemapping[1] = " -> ";
 		add_edges(edges);
 	}
 	void add_edges(const vector<vector<int>> &edges)
 	{
 		for (const vector<int> &e : edges)
-			add_edge(e[0], e[1]);
+			add_edge(e[0], e[1], e[2]);
 	}
 	virtual vector<pair<pair<int, int>, int>> get_adjacent(const int &node, const int &cost)
 	{
 		vector<pair<pair<int, int>, int>> res;
-		int i = 0, c = cost + 1;
-		for (const bool &b : adj[node])
+		int i = 0;
+		for (const int &w : adj[node])
 		{
-			if (b)
-				res.push_back(make_pair(make_pair(i, c), 1));
+			if (w != INT32_MAX)
+				res.push_back(make_pair(make_pair(i, w + cost), 1));
 			i++;
 		}
 		return res;
 	}
-	inline void add_edge(const int &u, const int &v)
+	inline void add_edge(const int &u, const int &v, const int &w)
 	{
-		adj[u][v] = adj[v][u] = true;
+		adj[u][v] = adj[v][u] = w;
+		// cout << "adding edge wt " << w << " bw " << u << ", " << v << endl;
 	}
 };
 
-void inputtaker(undir_unwei_graph &G)
+void inputtaker(undir_wei_graph &G)
 {
-	cout << "Enter edges as u,v (no space)\n";
-	cout << "To stop enter an edge of type i,i" << endl;
-	int u, v;
+	cout << "Enter edges as u,v,wt (no space)\n";
+	cout << "To stop enter an edge of type i,i,wt" << endl;
+	int u, v, w;
 	char comma;
-	cin >> u >> comma >> v;
+	cin >> u >> comma >> v >> comma >> w;
 	while (u != v)
 	{
-		G.add_edge(u, v);
-		cin >> u >> comma >> v;
+		G.add_edge(u, v, w);
+		cin >> u >> comma >> v >> comma >> w;
 	}
 }
 
@@ -101,28 +107,3 @@ void printsimplepath(stack<pair<int, int>> st)
 	}
 	cout << endl;
 }
-
-class static_defined_heuristic
-{
-	unordered_map<int, int> h;
-#define H(A, B) h[A] = B;
-
-public:
-	static_defined_heuristic()
-	{
-		H(1, 6)
-		H(2, 2)
-		H(3, 3)
-		H(4, 2)
-		H(5, 4)
-		H(6, 2)
-		H(7, 0)
-		H(8, 1)
-		H(9, 1)
-		H(10, 1)
-	}
-	int operator()(const int &n)
-	{
-		return h[n];
-	}
-};

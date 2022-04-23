@@ -8,9 +8,9 @@ class breadthlimiterwrapper : public graph
 public:
 	breadthlimiterwrapper(graph &G, int limit = INT_MAX) : G(G), lim(limit) {}
 	int &limit() { return lim; }
-	virtual vector<pair<int, int>> get_adjacent(const int &node, const int &cost)
+	virtual vector<pair<pair<int, int>,int>> get_adjacent(const int &node, const int &cost)
 	{
-		vector<pair<int, int>> arr = G.get_adjacent(node, cost);
+		vector<pair<pair<int, int>,int>> arr = G.get_adjacent(node, cost);
 		if (arr.size() > lim)
 			arr.resize(lim);
 		return arr;

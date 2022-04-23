@@ -1,7 +1,9 @@
 #include "types.h"
 #include <cmath>
 
-class _8puzzlegraph:public graph
+unordered_map<int, string> opnamemapping;
+
+class _8puzzlegraph : public graph
 {
 	static int getpos(int config)
 	{
@@ -36,34 +38,42 @@ class _8puzzlegraph:public graph
 	}
 
 public:
-	virtual vector<pair<int, int>> get_adjacent(const int &node, const int &cost)
+	_8puzzlegraph()
 	{
-		vector<pair<int, int>> res;
+		opnamemapping[0] = "INITIAL BOARD CONFIG IS";
+		opnamemapping[1] = "      |     MOVE UP\n      V";
+		opnamemapping[2] = "      |     MOVE DOWN\n      V";
+		opnamemapping[3] = "      |     MOVE LEFT\n      V";
+		opnamemapping[4] = "      |     MOVE RIGHT\n      V";
+	}
+	virtual vector<pair<pair<int, int>, int>> get_adjacent(const int &node, const int &cost)
+	{
+		vector<pair<pair<int, int>, int>> res;
 		int p = getpos(node), c = cost + 1;
 		switch (p / 10)
 		{
 		case 1:
-			res.push_back(make_pair(movedown(node, p), c));
+			res.push_back(make_pair(make_pair(movedown(node, p), c), 2));
 			break;
 		case 2:
-			res.push_back(make_pair(movedown(node, p), c));
-			res.push_back(make_pair(moveup(node, p), c));
+			res.push_back(make_pair(make_pair(movedown(node, p), c), 2));
+			res.push_back(make_pair(make_pair(moveup(node, p), c), 1));
 			break;
 		case 3:
-			res.push_back(make_pair(moveup(node, p), c));
+			res.push_back(make_pair(make_pair(moveup(node, p), c),1));
 			break;
 		}
 		switch (p % 10)
 		{
 		case 1:
-			res.push_back(make_pair(moveright(node, p), c));
+			res.push_back(make_pair(make_pair(moveright(node, p), c), 4));
 			break;
 		case 2:
-			res.push_back(make_pair(moveright(node, p), c));
-			res.push_back(make_pair(moveleft(node, p), c));
+			res.push_back(make_pair(make_pair(moveright(node, p), c), 4));
+			res.push_back(make_pair(make_pair(moveleft(node, p), c), 3));
 			break;
 		case 3:
-			res.push_back(make_pair(moveleft(node, p), c));
+			res.push_back(make_pair(make_pair(moveleft(node, p), c), 3));
 			break;
 		}
 		return res;
@@ -84,7 +94,7 @@ void print_8puzzleconfig(int puzzle)
 			else
 				cout << "   |";
 		}
-		cout<<'\n';
+		cout << '\n';
 	}
 	cout << "+---+---+---+" << endl;
 }
@@ -100,16 +110,14 @@ void printorder(vector<int> order)
 	cout << endl;
 }
 
-void printpath(stack<int> path)
+void printpath(stack<pair<int,int>> path)
 {
 	if (path.empty())
 		cout << endl;
-	print_8puzzleconfig(path.top());
-	path.pop();
 	while (!path.empty())
 	{
-		cout << "\n      |\n      V\n" << endl;
-		print_8puzzleconfig(path.top());
+		cout << opnamemapping[path.top().first]<<endl;
+		print_8puzzleconfig(path.top().second);
 		path.pop();
 	}
 	cout << endl;
@@ -121,5 +129,52 @@ public:
 	bool operator()(const int &n)
 	{
 		return n == 123456780;
+	}
+};
+
+class misplaced_count_heuristic
+{
+public:
+	int operator()(const int &v)
+	{
+		int copy = v, target = 123456780, h = 0;
+		for (int i = 9; i > 0; i--)
+		{
+			if (copy % 10 != target % 10)
+				h++;
+			copy /= 10;
+			target /= 10;
+		}
+		return h;
+	}
+};
+
+class manhattan_total_heuristic
+{
+public:
+	int operator()(const int &v)
+	{
+		int copy = v, target = 123456780, h = 0;
+		int r = 2, c = 2;
+		for (int i = 9; i > 0; i--)
+		{
+			int tr, tc;
+			if (copy % 10 == 0)
+			{
+				tr = 2, tc = 2;
+			}
+			else
+			{
+				tr = (copy % 10 - 1) / 3;
+				tc = (copy % 10 - 1) % 3;
+			}
+			h += abs(tr - r) + abs(tc - c);
+			copy /= 10;
+			target /= 10;
+			c--;
+			if (c == -1)
+				r--, c = 2;
+		}
+		return h;
 	}
 };
